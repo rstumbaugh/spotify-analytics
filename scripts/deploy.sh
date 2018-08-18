@@ -8,8 +8,8 @@ version_path=$root/__version__
 ssh_key=~/Development/keys/aws/rstum.pem
 user=ec2-user
 host=ec2-54-175-95-178.compute-1.amazonaws.com
-ec2_output_dir='~'
-ec2_env_path='~/env'
+ec2_output_dir="/home/$user"
+ec2_env_path="/home/$user/env"
 
 # array contains function
 function contains() {
@@ -53,6 +53,17 @@ for x in ${all[@]}; do
 done
 echo [deploy] Copied contents to $dir_name
 
+ec2_venv_dir=$ec2_env_path/$app_name
+ec2_app_dir=$ec2_output_dir/$dir_name
+
+# generate service file in output directory
+service_name=$app_name.service
+scripts/generate_service.sh \
+    $ec2_venv_dir/bin/python3 \
+    $ec2_app_dir/main.py \
+    $dir_name/$service_name \
+    $ec2_output_dir/log/$service_name'_'$new_version.log
+
 # get pip packages for environment
 source $venv_path/bin/activate
 pip freeze > $dir_name/requirements.txt
@@ -67,15 +78,15 @@ echo [deploy] Copying $dir_name.zip to EC2 server
 scp -i $ssh_key $archive_name $user@$host:$ec2_output_dir
 
 echo [deploy] Unzipping package and creating environment
-venv_dir=$ec2_env_path/$app_name
-app_dir=$ec2_output_dir/$dir_name
 ssh -i $ssh_key $user@$host "
     unzip -o $archive_name > /dev/null;
     rm $archive_name;
-    $app_dir/scripts/init_env.sh $venv_dir $app_dir
+    $ec2_app_dir/scripts/init_env.sh $ec2_venv_dir $ec2_app_dir;
+    $ec2_app_dir/scripts/install_service.sh $service_name $ec2_app_dir
 "
 
-echo [deploy] Removing $dir_name, $archive_name
-rm -rf $dir_name $archive_name
+# clean up
+echo [deploy] Removing $dir_name, $archive_name, $service_name
+rm -rf $dir_name $archive_name $service_name
 
 echo [deploy] Done
