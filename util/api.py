@@ -1,11 +1,12 @@
 # Spotify API utils
+import os
 import json
 import base64
 import requests
 import settings
 
-client_id = settings.get('SPOTIFY_CLIENT_ID')
-client_secret = settings.get('SPOTIFY_CLIENT_SECRET')
+client_id = os.environ['SPOTIFY_CLIENT_ID']
+client_secret = os.environ['SPOTIFY_CLIENT_SECRET']
 
 # probably want to move this to a DB at some point
 # would be much better to extend for multiple users if stored in a DB
