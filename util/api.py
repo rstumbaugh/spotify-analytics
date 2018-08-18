@@ -3,7 +3,6 @@ import os
 import json
 import base64
 import requests
-import settings
 
 client_id = os.environ['SPOTIFY_CLIENT_ID']
 client_secret = os.environ['SPOTIFY_CLIENT_SECRET']

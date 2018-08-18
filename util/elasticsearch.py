@@ -1,8 +1,7 @@
 import os
 from elasticsearch import Elasticsearch
-import settings
 
-es = Elasticsearch(hosts=os.environ['ELASTICSEARCH_HOST'])
+es = Elasticsearch()
 
 index_name = 'play_history'
 
