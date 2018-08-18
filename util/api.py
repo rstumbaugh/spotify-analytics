@@ -3,6 +3,7 @@ import os
 import json
 import base64
 import requests
+from util import log
 
 client_id = os.environ['SPOTIFY_CLIENT_ID']
 client_secret = os.environ['SPOTIFY_CLIENT_SECRET']
@@ -35,17 +36,17 @@ def get(endpoint, url_params=None, access_token=access_token, refresh_token=refr
 
     r = requests.get(url, headers=header)
     if r.status_code == 401 and access_token is not None:
-        print('Refreshing access token')
+        log.info('Refreshing access token')
         new_token = refresh_access_token(refresh_token)
         if new_token is None:
-            print('Error refreshing access token')
+            log.info('Error refreshing access token')
             return None
 
         update_access_token(new_token)
 
         header = { 'Authorization': 'Bearer {}'.format(new_token) }
         r = requests.get(url, headers=header)
-        print('Access token refreshed successfully')
+        log.info('Access token refreshed successfully')
 
     return r
 

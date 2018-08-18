@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from util import api, elasticsearch
+from util import log, api, elasticsearch
 
 def format_artist(artist):
     return artist['id']
@@ -31,7 +31,7 @@ def format_item(item):
     }
 
 def get_recently_played():
-    print('Getting recently played tracks...')
+    log.info('Getting recently played tracks...')
     endpoint = '/me/player/recently-played'
     query_params = {
         'limit': 50 
@@ -40,8 +40,8 @@ def get_recently_played():
     response = api.get(endpoint, query_params)
 
     if response.status_code not in [200, 201]:
-        print('Error getting recently played')
-        print(response.text)
+        log.info('Error getting recently played')
+        log.info(response.text)
         return []
 
     items = response.json()['items']
@@ -59,4 +59,4 @@ def index_tracks(tracks):
             elasticsearch.index_track(track, doc_id)
             indexed += 1
 
-    print('Indexed %d of %d tracks' % (indexed, len(tracks)))
+    log.info('Indexed %d of %d tracks' % (indexed, len(tracks)))
