@@ -12,3 +12,6 @@ sudo systemctl daemon-reload
 
 echo [install_service] Starting service
 sudo systemctl start $service_name
+
+echo [install_service] Getting service status
+sudo systemctl status $service_name
