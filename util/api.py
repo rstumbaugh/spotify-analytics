@@ -11,11 +11,13 @@ client_secret = os.environ['SPOTIFY_CLIENT_SECRET']
 # probably want to move this to a DB at some point
 # would be much better to extend for multiple users if stored in a DB
 file_path = os.path.dirname(__file__)
-with open(os.path.join(file_path, '../priv/access_token')) as f:
+access_token_path = os.path.join(file_path, '../priv/access_token')
+refresh_token_path = os.path.join(file_path, '../priv/refresh_token')
+with open(access_token_path) as f:
     global access_token
     access_token = f.readline()
 
-with open(os.path.join(file_path, '../priv/refresh_token')) as f:
+with open(refresh_token_path) as f:
     global refresh_token
     refresh_token = f.readline()
 
@@ -74,6 +76,6 @@ def refresh_access_token(refresh_token):
 
 def update_access_token(new_token):
     global access_token
-    with open('priv/access_token', 'w') as f:
+    with open(access_token_path, 'w') as f:
         f.write(new_token)
     access_token = new_token
