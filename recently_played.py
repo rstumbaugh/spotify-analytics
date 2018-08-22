@@ -30,11 +30,11 @@ def format_item(item):
         'played_at': item['played_at']
     }
 
-def get_recently_played():
+def get_recently_played(limit):
     log.info('Getting recently played tracks...')
     endpoint = '/me/player/recently-played'
     query_params = {
-        'limit': 50 
+        'limit': limit
     }
 
     response = api.get(endpoint, query_params)

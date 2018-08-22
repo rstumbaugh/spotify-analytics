@@ -2,3 +2,5 @@
 *.pyc
 .env
 priv/
+play_history/
+__version__
