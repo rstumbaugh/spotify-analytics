@@ -53,7 +53,11 @@ def index_tracks(tracks):
         track_id = track['track']['id']
         timestamp = track['played_at']
 
-        doc_id = '%s_%s' % (track_id, timestamp)
+        if '_id' in track:
+            doc_id = track['_id']
+            del track['_id']
+        else:
+            doc_id = '%s_%s' % (track_id, timestamp)
 
         if not elasticsearch.track_exists(doc_id):
             elasticsearch.index_track(track, doc_id)
