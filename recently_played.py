@@ -3,7 +3,7 @@ from datetime import datetime
 from util import log, api, elasticsearch
 
 def format_artist(artist):
-    return artist['id']
+    return artist['name']
 
 def format_album(album):
     return {
