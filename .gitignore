@@ -4,3 +4,4 @@
 priv/
 play_history/
 __version__
+test/
