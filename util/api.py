@@ -3,6 +3,7 @@ import os
 import json
 import base64
 import requests
+from urllib.parse import urlencode
 from util import log
 
 client_id = os.environ['SPOTIFY_CLIENT_ID']
@@ -33,8 +34,7 @@ def get(endpoint, url_params=None, access_token=access_token, refresh_token=refr
     }
 
     if url_params:
-        query_string = '?%s' % '&'.join(['%s=%s' % (key, url_params[key]) for key in url_params])
-        url += query_string
+        url += '?%s' % urlencode(url_params)
 
     r = requests.get(url, headers=header)
     if r.status_code == 401 and access_token is not None:
