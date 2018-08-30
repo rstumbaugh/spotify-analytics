@@ -50,6 +50,11 @@ def get(endpoint, url_params=None, access_token=access_token, refresh_token=refr
         r = requests.get(url, headers=header)
         log.info('Access token refreshed successfully')
 
+    elif r.status_code == 429:
+        wait = int(r.headers['retry-after'])
+        log.info('Rate limit exceeded, waiting %d seconds' % wait)
+        return get(endpoint, url_params, access_token, refresh_token)
+
     return r
 
 def get_auth_header():
