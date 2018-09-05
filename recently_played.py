@@ -1,6 +1,7 @@
+import os
 import json
 from datetime import datetime
-from util import log, api, elasticsearch
+from util import log, api, elasticsearch, time
 
 def format_artist(artist):
     return artist['name']
@@ -30,12 +31,16 @@ def format_item(item):
         'played_at': item['played_at']
     }
 
-def get_recently_played(limit):
+def get_recently_played(limit, after=None):
     log.info('Getting recently played tracks...')
     endpoint = '/me/player/recently-played'
     query_params = {
         'limit': limit
     }
+
+    if after:
+        query_params['after'] = after
+        print('Searching after %d' % after)
 
     response = api.get(endpoint, query_params)
 
@@ -64,3 +69,28 @@ def index_tracks(tracks):
             indexed += 1
 
     log.info('Indexed %d of %d tracks' % (indexed, len(tracks)))
+
+def get_most_recent_timestamp(scrape_dir):
+    ''' 
+        searches scrape_dir for most recent scrape file
+        then gets most recent timestamp from most recent scrape
+        returns unix timestamp
+    '''
+    if not os.path.exists(scrape_dir):
+        return None
+
+    files = os.listdir(scrape_dir)
+    
+    if len(files) == 0:
+        return None
+
+    files.sort(reverse=True)
+    most_recent = files[0]
+
+    file_path = os.path.join(scrape_dir, most_recent)
+    with open(file_path) as f:
+        line = f.readline()
+        most_recent_track = json.loads(line)
+
+    play_time = time.parse_datetime(most_recent_track['played_at'])
+    return time.to_epoch_ms(play_time)
