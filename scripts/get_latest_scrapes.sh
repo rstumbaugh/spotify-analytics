@@ -9,7 +9,7 @@ version=`cat $root/__version__`
 clean="y"
 
 user=ec2-user
-host=ec2-54-175-95-178.compute-1.amazonaws.com
+host=ec2-18-234-115-133.compute-1.amazonaws.com
 scrapes=/home/$user/$app_name'_'$version/play_history
 
 cd $root
